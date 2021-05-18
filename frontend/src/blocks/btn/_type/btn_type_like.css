@@ -1,0 +1,17 @@
+.btn_type_like {
+    background-image: url(../heart.svg);
+    width: 21px;
+    height: 18px;
+}
+
+.btn_type_like:focus {
+    border: none;
+}
+
+.btn_type_like:hover {
+    border: none;
+}
+
+.btn_type_like.is-active {
+    background-image: url(../heart-black.svg);
+}

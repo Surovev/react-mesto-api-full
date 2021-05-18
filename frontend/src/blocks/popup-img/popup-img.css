@@ -1,0 +1,9 @@
+@import url(__background-img/popup-img__background-img.css);
+@import url(__subtitle/popup-img__subtitle.css);
+
+
+.popup-img {
+    position: relative;
+    max-width: 75vw;
+    max-height: 75vh;
+}

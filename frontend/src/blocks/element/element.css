@@ -1,0 +1,13 @@
+@import url(__img/element__img.css);
+@import url(__subtitle/element__subtitle.css);
+@import url(__bottom-part/element__bottom-part.css);
+@import url(__like/element__like.css);
+@import url(__like-counter/element__like-counter.css);
+
+.element {
+    width: 282px;
+    position: relative;
+    border-radius: 10px;
+    background: white;
+    overflow: hidden;
+}

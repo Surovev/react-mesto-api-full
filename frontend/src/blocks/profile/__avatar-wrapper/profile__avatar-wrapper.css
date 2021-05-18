@@ -1,0 +1,13 @@
+.profile__avatar-wrapper{
+    position: relative;
+    margin-right: 30px;
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+}
+
+.profile__avatar-wrapper:hover {
+    z-index: 2;
+    cursor: pointer;
+}
+

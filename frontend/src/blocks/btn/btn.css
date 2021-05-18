@@ -1,0 +1,23 @@
+@import url(_disabled/btn_disabled.css);
+
+.btn {
+    padding: 0;
+    border: none;
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    cursor: pointer;
+    transition: opacity linear .3s;
+}
+
+.btn:hover {
+
+    outline: none;
+    opacity: .6;
+}
+
+.btn:focus {
+
+
+    outline: none;
+}

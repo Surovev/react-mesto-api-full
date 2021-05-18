@@ -1,0 +1,12 @@
+.btn_type_close {
+    width: 41px;
+    height: 41px;
+    background-image: url(../add.svg);
+    background-size: cover;
+    transform: rotate(45deg);
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: -40px;
+    right: -40px;
+}
