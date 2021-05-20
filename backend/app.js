@@ -2,8 +2,9 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 const {
-  celebrate, Joi, isCelebrateError,
+  celebrate, Joi, isCelebrateError
 } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/Logger');
 const { login, createUser } = require('./controllers/users');
@@ -21,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useFindAndModify: false,
+  useFindAndModify: false
 });
 
 app.use(requestLogger);
@@ -29,14 +30,14 @@ app.use(requestLogger);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
-    password: Joi.string().required().min(8),
-  }),
+    password: Joi.string().required().min(8)
+  })
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email(),
-    password: Joi.string().required().min(8),
-  }),
+    password: Joi.string().required().min(8)
+  })
 }), createUser);
 
 app.use(auth);
@@ -58,7 +59,7 @@ app.use((err, req, res, next) => {
     res
       .status(400)
       .send({
-        message: errorDetails.message,
+        message: errorDetails.message
       });
   } else {
     const { statusCode = err.status || 500, message = err.message || 'На сервере произошла ошибка' } = err;
@@ -66,7 +67,7 @@ app.use((err, req, res, next) => {
       .status(statusCode)
       .send({
         // проверяем статус и выставляем сообщение в зависимости от него
-        message,
+        message
       });
   }
   next();

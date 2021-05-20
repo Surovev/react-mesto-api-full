@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const LoginError = require('../errors/LoginError');
 const ConflictError = require('../errors/ConflictError');
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const SOLT_ROUNDS = 10;
 
@@ -22,11 +23,11 @@ exports.login = (req, res, next) => {
           if (!matched) {
             throw new LoginError('Неправильная почта или пароль');
           }
-          const token = jwt.sign({ _id: user._id }, 'some-secret-key');
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
           res.cookie('userToken', token, {
             maxAge: 360000 * 7 * 24,
             httpOnly: true,
-            sameSite: true,
+            sameSite: true
           })
             .send({ _id: user._id });
         })
@@ -65,11 +66,11 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email
   } = req.body;
   bcrypt.hash(req.body.password, SOLT_ROUNDS)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name, about, avatar, email, password: hash
     }))
     .then((user) => {
       if (!user) {
@@ -80,7 +81,7 @@ module.exports.createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         _id: user._id,
-        email: user.email,
+        email: user.email
       });
     })
     .catch((err) => {
@@ -100,8 +101,8 @@ module.exports.updateUserProfile = (req, res, next) => {
     // Передадим объект опций:
     {
       new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
-    },
+      runValidators: true // данные будут валидированы перед изменением
+    }
   )
     .then((user) => {
       if (!user) {
@@ -120,8 +121,8 @@ module.exports.updateUserAvatar = (req, res, next) => {
     // Передадим объект опций:
     {
       new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
-    },
+      runValidators: true // данные будут валидированы перед изменением
+    }
   )
     .then((user) => {
       if (!user) {

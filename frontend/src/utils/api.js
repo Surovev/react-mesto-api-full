@@ -1,3 +1,5 @@
+const { JWT_SECRET } = process.env;
+
 class Api {
   constructor (options) {
     this._options = options;
@@ -146,9 +148,9 @@ class Api {
 }
 
 const api = new Api({
-  authorization: 'fd8146ec-08ee-4ae1-b040-cf6a41d6c968',
+  authorization: JWT_SECRET,
   baseUrl: 'https://mesto.nomoreparties.co/v1/',
-  cohort: 'cohort-20/'
+  cohort: ''
 });
 
 export default api;
