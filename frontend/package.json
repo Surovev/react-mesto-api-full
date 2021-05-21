@@ -14,6 +14,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-prod": "react-scripts build && rm -r ../mesto-frontend && mv build ../mesto-frontend",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
