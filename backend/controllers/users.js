@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const LoginError = require('../errors/LoginError');
 const ConflictError = require('../errors/ConflictError');
-const { NODE_ENV, JWT_SECRET } = process.env;
 
 const SOLT_ROUNDS = 10;
 
@@ -23,7 +23,7 @@ exports.login = (req, res, next) => {
           if (!matched) {
             throw new LoginError('Неправильная почта или пароль');
           }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-key');
+          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
           res.cookie('userToken', token, {
             maxAge: 360000 * 7 * 24,
             httpOnly: true,
