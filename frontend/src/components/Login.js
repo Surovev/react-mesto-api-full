@@ -18,7 +18,7 @@ function Login (props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.onLogin(userData)
-      .catch(err => props.errorPopup('Неправильная почта или пароль'));
+      .catch(err => props.errorPopup(err));
   };
   return (
     <>

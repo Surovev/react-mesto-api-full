@@ -1,3 +1,5 @@
+const checkResponse = require('./checkResponse');
+
 class Api {
   constructor (options) {
     this._options = options;
@@ -16,14 +18,7 @@ class Api {
         Authorization: this._authorization
       }
     })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        // если ошибка, отклоняем промис
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then(checkResponse);
   }
 
   setUserInfo (data) {
@@ -38,14 +33,7 @@ class Api {
         about: data.desc
       })
 
-    }).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(checkResponse);
   }
 
   updateAvatar (data) {
@@ -60,14 +48,7 @@ class Api {
       })
 
     })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        // если ошибка, отклоняем промис
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then(checkResponse);
   }
 
   getInitialCards () {
@@ -77,14 +58,7 @@ class Api {
         Authorization: this._authorization
       }
     })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-
-        // если ошибка, отклоняем промис
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then(checkResponse);
   }
 
   addCard (data) {
@@ -99,54 +73,28 @@ class Api {
         link: data.link
       })
     })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
+      .then(checkResponse);
   }
 
   deleteCard (cardId) {
     return fetch(`${this._url}cards/${cardId}`, {
       method: 'DELETE',
       headers: { Authorization: this._authorization }
-    }).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(checkResponse);
   }
 
   removeLike (cardId) {
     return fetch(`${this._url}cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: { Authorization: this._authorization }
-    }).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(checkResponse);
   }
 
   addLike (cardId) {
     return fetch(`${this._url}cards/${cardId}/likes`, {
       method: 'PUT',
       headers: { Authorization: this._authorization }
-    }).then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(checkResponse);
   }
 }
 

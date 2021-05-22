@@ -1,8 +1,11 @@
 require('dotenv').config();
-const { JWT_SECRET } = process.env;
+const JWT_SECRET = require('../utils/handlerToken');
 
 const jwt = require('jsonwebtoken');
 const LoginError = require('../errors/LoginError');
+
+// TODO: если нет токена и NODE_ENV !== 'production' нужно назначит токен по-умолчанию
+// вынести код в отдельный модуль, т.к. испольуется в контроллере пользователя
 
 module.exports = (req, res, next) => {
   let token = req.headers.authorization;

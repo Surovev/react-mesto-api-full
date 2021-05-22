@@ -5,7 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const LoginError = require('../errors/LoginError');
 const ConflictError = require('../errors/ConflictError');
-const { JWT_SECRET } = process.env;
+const JWT_SECRET = require('../utils/handlerToken');
 
 const SOLT_ROUNDS = 10;
 
