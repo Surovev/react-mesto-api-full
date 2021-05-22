@@ -1,6 +1,6 @@
 
-import React from 'react';
-import Header from './Header.js';
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm';
@@ -10,6 +10,11 @@ import EditAvatarPopup from './EditAvatarPopup';
 import api from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import AddPlacePopup from './AddPlacePopup.js';
+import Login from './Login';
+import Register from './Register';
+import InfoToolTip from './InfoTooltip';
+import ProtectedRoute from './ProtectedRoute';
+import { register, authorize, getContent } from '../utils/mestoAuth';
 
 function App (props) {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -18,15 +23,27 @@ function App (props) {
   const [isErrorPopupOpen, setIsErrorPopupOpen] = React.useState(false);
   const [isErrorPopuptext, setIsErrorPopupText] = React.useState('Ошибка');
 
+  const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
+
   const [currentUser, setCurrentUser] = React.useState({});
 
+  const [toolTipState, setToolTipState] = React.useState({ type: '', text: '' });
+  const [cards, setCards] = React.useState([]);
+  const [authUser, setAuthUser] = React.useState({});
+
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [authToken, setAuthToken] = useState(window.localStorage.getItem('jwt'));
+
+  const history = useHistory();
   React.useEffect(() => {
-    api.getUserInfo().then((data) => {
-      setCurrentUser(data);
-    })
-      .catch((error) => {
-        errorPopup(error);
-      });
+    if (authToken) {
+      getContent(authToken).then(({ data }) => {
+        setCurrentUser(data);
+      })
+        .catch((error) => {
+          errorPopup(error);
+        });
+    }
   }, []);
 
   const [selectedCard, setSelectedCard] = React.useState(null);
@@ -45,7 +62,8 @@ function App (props) {
   }
 
   function errorPopup (text) {
-    setIsErrorPopupText(text);
+    const message = text.message ? text.message : text;
+    setIsErrorPopupText(message);
 
     setIsErrorPopupOpen(true);
   }
@@ -60,6 +78,7 @@ function App (props) {
     setIsAddPlacePopupOpen(false);
     setIsErrorPopupOpen(false);
     setSelectedCard(null);
+    setIsInfoToolTipOpen(false);
   }
 
   function handleUpdateUser (data) {
@@ -85,19 +104,12 @@ function App (props) {
       });
   }
 
-  React.useEffect(() => {
-    api.getInitialCards().then((data) => {
-      setCards(data);
-    })
-      .catch((error) => {
-        errorPopup(error);
-      });
-  }, []);
-
-  const [cards, setCards] = React.useState([]);
+  function handleInfoToolTip () {
+    setIsInfoToolTipOpen(true);
+  }
 
   function handleCardLike (card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     if (!isLiked) {
       api.addLike(card._id).then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
@@ -132,24 +144,83 @@ function App (props) {
         errorPopup(error);
       });
   }
+  useEffect(() => {
+    if (authToken) {
+      getContent(authToken).then((data) => {
+        if (data) {
+          api.setAutorization(authToken);
+          setLoggedIn(true);
+          setAuthUser(data.data);
+          history.push('/');
+        }
+      });
+    }
+  }, [authToken]);
+
+  const handleLogin = ({ email, password }) => {
+    return authorize({ email, password })
+      .then((data) => {
+        if (data.token) {
+          setAuthToken(data.token);
+          window.localStorage.setItem('jwt', data.token);
+          history.push('/');
+          // tokenCheck();
+        }
+      });
+  };
+
+  const handleRegister = ({ password, email }) => {
+    console.log({ password, email });
+    return register({ password, email }).then((res) => {
+      setToolTipState({ type: 'ok', text: 'Вы успешно зарегистировались!' });
+      handleInfoToolTip();
+
+      history.push('/sign-in');
+      return res;
+    }).catch(res => {
+      handleInfoToolTip();
+      setToolTipState({ type: 'error', text: 'Что-то пошло не так! Попробуйте еще раз.' });
+    });
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='page__content'>
+        <Switch>
+          <ProtectedRoute
+            exact path='/'
+            loggedIn={loggedIn}
+            component={Main}
+            onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick}
+            setImgPopup={handleCardClick} cards={cards} setCards={setCards} errorPopup={errorPopup} onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete} authUser={authUser}
+            onSignOut={() => {
+              setAuthUser({});
+              window.localStorage.removeItem('jwt');
+            }}
+          />
 
-        <Header />
+          <Route path='/sign-in'>
+            <Login onLogin={handleLogin} errorPopup={errorPopup} isClose={closeAllPopups} />
+          </Route>
+          <Route path='/sign-up'>
+            <Register onRegister={handleRegister} />
+          </Route>
 
-        <Main
-          onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick}
-          setImgPopup={handleCardClick} cards={cards} onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-
-        />
+          <Route>
+            {loggedIn ? (
+              <Redirect to='/' />
+            ) : (
+              <Redirect to='/sign-in' />
+            )}
+          </Route>
+        </Switch>
         <section className='elements' />
+
         <Footer />
         <EditProfilePopup isOpen={isEditProfilePopupOpen} isClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} isClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
-
+        <InfoToolTip type={toolTipState.type} text={toolTipState.text} isOpen={isInfoToolTipOpen} isClose={closeAllPopups} />
         <ImagePopup isClose={closeAllPopups} stateImgPopup={selectedCard} handleCardClick={handleCardClick} />
         <PopupWithForm btnName='Да' popupName='delete'>
           <h3 className='popup__title'>Вы уверены?</h3>

@@ -1,14 +1,34 @@
 import React from 'react';
 import avatar from '../blocks/profile/edit-avatar.svg';
+import { Link } from 'react-router-dom';
+import Header from './Header';
+import api from '../utils/api';
 
-// import api from '../utils/Api.js';
 import Card from './Card.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main (props) {
   const currentUser = React.useContext(CurrentUserContext);
+
+  function popupWithError (error) {
+    props.errorPopup(error);
+  }
+
+  React.useEffect(() => {
+    api.getInitialCards().then((data) => {
+      props.setCards(data);
+    })
+      .catch((error) => {
+        popupWithError(error);
+      });
+  }, []);
+
   return (
     <>
+      <Header>
+        <div className='header__auth-email'>{props.authUser.email}</div>
+        <Link onClick={props.onSignOut} to='/sign-in' className='header__auth-link'>Выйти </Link>
+      </Header>
       <section className='profile'>
         <div className='profile__avatar-wrapper'>
           <img className='profile__edit-avatar' src={avatar} alt='редактировать аватар' />

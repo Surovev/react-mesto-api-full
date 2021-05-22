@@ -1,0 +1,13 @@
+@import url(./__container/auth-form__container.css);
+@import url(./__input/auth-form__input.css);
+@import url(./__redirect-link/auth-form__redirect-link.css);
+@import url(./__row/auth-form__row.css);
+@import url(./__title/auth-form__title.css);
+
+
+.auth-form {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

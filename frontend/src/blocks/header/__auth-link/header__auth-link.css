@@ -1,0 +1,15 @@
+
+.header__auth-link {
+    display: block;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 400;
+    text-align: right;
+    transition: opacity linear .3s;
+    text-decoration: none;
+}
+
+.header__auth-link:hover {
+    opacity: .6;
+}

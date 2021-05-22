@@ -1,17 +1,19 @@
-const { JWT_SECRET } = process.env;
-
 class Api {
   constructor (options) {
     this._options = options;
-    this._autorization = this._options.authorization;
+    // this._autorization = this._options.authorization;
     this._url = this._options.baseUrl;
     this._cohort = this._options.cohort;
   }
 
+  setAutorization (token) {
+    this._authorization = 'Bearer ' + token;
+  }
+
   getUserInfo () {
-    return fetch(`${this._url}${this._cohort}users/me`, {
+    return fetch(`${this._url}users/me`, {
       headers: {
-        authorization: this._autorization
+        Authorization: this._authorization
       }
     })
       .then(res => {
@@ -25,10 +27,10 @@ class Api {
   }
 
   setUserInfo (data) {
-    return fetch(`${this._url}${this._cohort}users/me`, {
+    return fetch(`${this._url}users/me`, {
       method: 'PATCH',
       headers: {
-        authorization: this._autorization,
+        Authorization: this._authorization,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -47,10 +49,10 @@ class Api {
   }
 
   updateAvatar (data) {
-    return fetch(`${this._url}${this._cohort}users/me/avatar/`, {
+    return fetch(`${this._url}users/me/avatar/`, {
       method: 'PATCH',
       headers: {
-        authorization: this._autorization,
+        Authorization: this._authorization,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -69,9 +71,10 @@ class Api {
   }
 
   getInitialCards () {
-    return fetch(`${this._url}${this._cohort}cards`, {
+    return fetch(`${this._url}cards`, {
+      method: 'GET',
       headers: {
-        authorization: this._autorization
+        Authorization: this._authorization
       }
     })
       .then(res => {
@@ -85,10 +88,10 @@ class Api {
   }
 
   addCard (data) {
-    return fetch(`${this._url}${this._cohort}cards`, {
+    return fetch(`${this._url}cards`, {
       method: 'POST',
       headers: {
-        authorization: this._autorization,
+        Authorization: this._authorization,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -105,9 +108,9 @@ class Api {
   }
 
   deleteCard (cardId) {
-    return fetch(`${this._url}${this._cohort}cards/${cardId}`, {
+    return fetch(`${this._url}cards/${cardId}`, {
       method: 'DELETE',
-      headers: { authorization: this._autorization }
+      headers: { Authorization: this._authorization }
     }).then(res => {
       if (res.ok) {
         return res.json();
@@ -119,9 +122,9 @@ class Api {
   }
 
   removeLike (cardId) {
-    return fetch(`${this._url}${this._cohort}cards/likes/${cardId}`, {
+    return fetch(`${this._url}cards/${cardId}/likes`, {
       method: 'DELETE',
-      headers: { authorization: this._autorization }
+      headers: { Authorization: this._authorization }
     }).then(res => {
       if (res.ok) {
         return res.json();
@@ -133,9 +136,9 @@ class Api {
   }
 
   addLike (cardId) {
-    return fetch(`${this._url}${this._cohort}cards/likes/${cardId}`, {
+    return fetch(`${this._url}cards/${cardId}/likes`, {
       method: 'PUT',
-      headers: { authorization: this._autorization }
+      headers: { Authorization: this._authorization }
     }).then(res => {
       if (res.ok) {
         return res.json();
@@ -148,8 +151,7 @@ class Api {
 }
 
 const api = new Api({
-  authorization: JWT_SECRET,
-  baseUrl: 'https://mesto.nomoreparties.co/v1/',
+  baseUrl: 'http://localhost:3000/',
   cohort: ''
 });
 

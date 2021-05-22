@@ -3,7 +3,7 @@ const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch((err) => next(err));
 };
 
@@ -15,17 +15,19 @@ module.exports.createCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Нет карточки с таким id');
       }
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => next(err));
 };
 module.exports.deleteCard = (req, res, next) => {
+  console.log(req.params.cardId);
+  console.log(req.user._id);
   Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Нет карточки с таким id');
       }
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => next(err));
 };
@@ -34,12 +36,12 @@ module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
+    { new: true }
   ).then((card) => {
     if (!card) {
       throw new NotFoundError('Нет карточки с таким id');
     }
-    res.send({ data: card });
+    res.send(card);
   })
     .catch((err) => next(err));
 };
@@ -47,11 +49,11 @@ module.exports.likeCard = (req, res, next) => {
 module.exports.dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } }, // убрать _id из массива
-  { new: true },
+  { new: true }
 ).then((card) => {
   if (!card) {
     throw new NotFoundError('Нет карточки с таким id');
   }
-  res.send({ data: card });
+  res.send(card);
 })
   .catch((err) => next(err));

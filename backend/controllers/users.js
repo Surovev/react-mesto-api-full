@@ -5,6 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const LoginError = require('../errors/LoginError');
 const ConflictError = require('../errors/ConflictError');
+const { JWT_SECRET } = process.env;
 
 const SOLT_ROUNDS = 10;
 
@@ -23,13 +24,13 @@ exports.login = (req, res, next) => {
           if (!matched) {
             throw new LoginError('Неправильная почта или пароль');
           }
-          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET);
           res.cookie('userToken', token, {
             maxAge: 360000 * 7 * 24,
             httpOnly: true,
             sameSite: true
           })
-            .send({ _id: user._id });
+            .send({ _id: user._id, token: token });
         })
         .catch((err) => next(err));
     })
@@ -108,7 +109,7 @@ module.exports.updateUserProfile = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => next(err));
 };
@@ -128,7 +129,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => next(err));
 };
