@@ -3,7 +3,6 @@ const checkResponse = require('./checkResponse');
 class Api {
   constructor (options) {
     this._options = options;
-    // this._autorization = this._options.authorization;
     this._url = this._options.baseUrl;
     this._cohort = this._options.cohort;
   }
@@ -99,8 +98,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'http://localhost:3000/',
-  cohort: ''
+  baseUrl: 'http://localhost:3000/'
 });
 
 export default api;

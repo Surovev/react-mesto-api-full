@@ -19,7 +19,6 @@ function Register (props) {
   const handleSubmit = (e) => {
     const { password, email } = userData;
     e.preventDefault();
-    console.log({ password, email });
     props.onRegister({ password, email }).catch(message =>
       console.log(message)
     );

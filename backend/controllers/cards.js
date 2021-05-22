@@ -20,8 +20,6 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => next(err));
 };
 module.exports.deleteCard = (req, res, next) => {
-  console.log(req.params.cardId);
-  console.log(req.user._id);
   Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
     .then((card) => {
       if (!card) {
