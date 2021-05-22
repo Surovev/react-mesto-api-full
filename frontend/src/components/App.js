@@ -49,7 +49,6 @@ function App (props) {
   const [selectedCard, setSelectedCard] = React.useState(null);
 
   function handleEditAvatarClick () {
-    console.log(isEditAvatarPopupOpen);
     setIsEditAvatarPopupOpen(true);
   }
 
@@ -93,7 +92,6 @@ function App (props) {
   }
 
   function handleUpdateAvatar (data) {
-    console.log(data);
     api.updateAvatar(data)
       .then(res => {
         setCurrentUser(res);
@@ -170,7 +168,6 @@ function App (props) {
   };
 
   const handleRegister = ({ password, email }) => {
-    console.log({ password, email });
     return register({ password, email }).then((res) => {
       setToolTipState({ type: 'ok', text: 'Вы успешно зарегистировались!' });
       handleInfoToolTip();
