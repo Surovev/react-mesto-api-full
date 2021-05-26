@@ -44,7 +44,7 @@ function App (props) {
           errorPopup(error);
         });
     }
-  }, []);
+  }, [authToken]);
 
   const [selectedCard, setSelectedCard] = React.useState(null);
 
@@ -153,7 +153,7 @@ function App (props) {
         }
       });
     }
-  }, [authToken]);
+  }, [loggedIn]);
 
   const handleLogin = ({ email, password }) => {
     return authorize({ email, password })
