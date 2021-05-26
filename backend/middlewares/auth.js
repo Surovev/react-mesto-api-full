@@ -1,7 +1,7 @@
-require('dotenv').config();
-const JWT_SECRET = require('../utils/handlerToken');
-
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = require('../utils/handlerToken');
+require('dotenv').config();
+
 const LoginError = require('../errors/LoginError');
 
 // TODO: если нет токена и NODE_ENV !== 'production' нужно назначит токен по-умолчанию

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 // Опишем схему:
 const userSchema = new mongoose.Schema({
   name: {
