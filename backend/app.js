@@ -61,23 +61,14 @@ app.use(errorLogger);
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  if (isCelebrateError(err)) {
-    const errorBody = err.details.get('body');
-    const { details: [errorDetails] } = errorBody;
-    res
-      .status(400)
-      .send({
-        message: errorDetails.message,
-      });
-  } else {
-    const { statusCode = err.status || 500, message = err.message || 'На сервере произошла ошибка' } = err;
-    res
-      .status(statusCode)
-      .send({
-        // проверяем статус и выставляем сообщение в зависимости от него
-        message,
-      });
-  }
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? `На сервере произошла ошибка: ${message}`
+        : message,
+    });
   next();
 });
 
