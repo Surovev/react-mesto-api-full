@@ -12,8 +12,8 @@ const {
 router.get('/', getCards);
 router.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string(),
-    link: Joi.string().uri(),
+    name: Joi.string().required(),
+    link: Joi.string().uri().required(),
   }),
 }), createCard);
 router.delete('/:cardId', celebrate({
