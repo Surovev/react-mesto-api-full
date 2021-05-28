@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 const {
-  celebrate, Joi, isCelebrateError, errors,
+  celebrate, Joi, errors,
 } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/Logger');
 const { login, createUser } = require('./controllers/users');
